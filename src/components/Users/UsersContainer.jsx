@@ -1,12 +1,12 @@
 import React from 'react';
 import {connect} from "react-redux";
 import {
-    followAC,
-    unfollowAC,
-    setUsersAC,
-    setCurrentPageAC,
-    setUsersTotalCountAC,
-    toggleIsFetchingAC
+    follow,
+    unfollow,
+    setUsers,
+    setCurrentPage,
+    setTotalUsersCount,
+    toggleIsFetching
 } from "../../redux/users-reducer";
 import * as axios from "axios";
 import Users from "./Users";
@@ -14,7 +14,7 @@ import Preloader from "../common/Preloader/Preloader";
 
 /* В этом файле у нас сразу 2 контейнерных компоненты, вложенных друг в друга.
 * Задача UsersContainer выполнять GET-запросы.
-* А внешняя контейнерная оборачивает её при помощи функцмм connect()() */
+* А внешняя контейнерная оборачивает её при помощи функции connect()() */
 
 class UsersContainer extends React.Component {
 
@@ -84,7 +84,7 @@ let mapStateToProps = (state) => {
     }
 }
 
-let mapDispatchToProps = (dispatch) => {
+/*let mapDispatchToProps = (dispatch) => {
     return {
         follow: (userId) => {
             dispatch(followAC(userId));
@@ -105,6 +105,12 @@ let mapDispatchToProps = (dispatch) => {
             dispatch(toggleIsFetchingAC(isFetching));
         },
     }
-}
+}*/
+// Я с первого раза не понял куда пропал dispatch и как вложенные компоненты будут понимать что мы передаем не просто AC,
+// а именно dispatch(AC). Вот понятное разьяснение с habr:
+// " ...если вы передаете в connect вторым аргументом не mapDispatchToProps, а объект с AC,
+// то connect оборачивает ваши AC в функцию-обертку () => store.dispatch(AC) и передаёт в props компонента."
 
-export default connect(mapStateToProps, mapDispatchToProps)(UsersContainer);
+export default connect(mapStateToProps,
+    {follow, unfollow, setUsers, setCurrentPage, setTotalUsersCount, toggleIsFetching}
+    )(UsersContainer);
