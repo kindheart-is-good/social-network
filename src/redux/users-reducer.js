@@ -59,6 +59,9 @@ const usersReducer = (state = initialState, action) => {
     }
 }
 
+// ActionCreator - это функция, которая возвращает объект Action.
+// Action - это объект, в котором инкапсулированы все данные для того чтобы Reducer получил этот Action и применил изменения на свой state.
+
 /* после запятой запись означает создание свойства
 * по факту это   userId: userId   , но в JS такое создание свойства в объекте можно записать просто как userId */
 export const follow = (userId) => ({type: FOLLOW, userId })

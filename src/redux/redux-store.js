@@ -15,6 +15,9 @@ let reducers = combineReducers({
 let store = legacy_createStore(reducers);
 
 /*  Для дебага из консоли браузера. Сохраняем ссылку на наш объект store в глобальный объект.   */
+/*  Создаём в объекте window свойство store. Записываем туда store созданный при помощи Redux фунции legacy_createStore(reducers)   */
+/*  У Redux store есть метод getState(), его и нужно вбить в консоли браузера.  */
+/*  Пример: store.getState().profilePage.profile    */
 window.store = store;
 
 export default store;
