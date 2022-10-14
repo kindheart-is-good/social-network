@@ -3,11 +3,40 @@ import {connect} from "react-redux";
 import Profile from "./Profile";
 import * as axios from "axios";
 import profileReducer, {setUserProfile} from "../../redux/profile-reducer";
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import {compose} from "redux";
+
+function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let location = useLocation();
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{ location, navigate, params }}
+            />
+        );
+    }
+
+    return ComponentWithRouterProp;
+}
+
+
 
 class ProfileContainer extends React.Component {
 
     componentDidMount() {
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/3`)
+        //let userId = this.props.match.params.userId;
+
+        let userId = this.props.router.params.userId;
+        if (!userId)
+        {
+            userId = 26116;
+        }
+
+        //axios.get(`https://social-network.samuraijs.com/api/1.0/profile/` + userId)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${userId}`)
             .then(response => {
                 //debugger;
                 this.props.setUserProfile(response.data);
@@ -29,4 +58,18 @@ let mapStateToProps = (state) => ({
     profile: state.profilePage.profile,
 })
 
-export default connect(mapStateToProps, {setUserProfile})(ProfileContainer);
+
+export default connect(mapStateToProps, {setUserProfile})(withRouter(ProfileContainer));
+
+// let WithUrlDataContainerComponent = withRouter(ProfileContainer);   // Чтобы получить данные из URL
+// export default connect(mapStateToProps, {setUserProfile})(WithUrlDataContainerComponent);
+
+/*
+const TakeParams = (props) => {
+    return <ProfileContainer {...props} param={useParams()} />
+}
+export default connect(mapStateToProps, {setUserProfile})(TakeParams);
+// export default compose(
+//     connect(mapStateToProps, {setUserProfile})
+// ) (TakeParams);
+*/
