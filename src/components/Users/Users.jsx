@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './Users.module.css';
 import userPhoto from "../../assets/images/userPhoto.png"
 import {NavLink} from "react-router-dom";
+import * as axios from "axios";
 
 let Users = (props) => {
 
@@ -13,6 +14,14 @@ let Users = (props) => {
             pages.push(i);
         //}
     }
+
+    /*
+    * * * ВАЖНАЯ ЗАМЕТКА ПО ПОВОДУ ФУНКЦИОНАЛА: follow-unfollow (при работе с Backend server API).
+    * Для начала проверьте, чтобы вы зарегестрированы на сайте с Backend server API.
+    * Далее проверьте, каким по счёту параметром вы передаёте объект с withCredentials и headers:
+    * у GET и DELETE - это должно передаваться 2-ым параметром, у POST - 3-тьим.
+    * Еще момент: иногда бывает так, что сервер с API тупит, отдаёт ответ по 40 секунд, тут остаётся только ждать.
+    */
 
     //debugger;
     return <div>
@@ -38,10 +47,36 @@ let Users = (props) => {
                         <div>
                             {u.followed
                                 ? <button onClick={() => {
-                                    props.unfollow(u.id)
+
+                                    axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {
+                                        withCredentials: true,
+                                        headers: {
+                                            "API-KEY" : "11a6c194-cab8-4726-81c1-f9115370431e"
+                                        }
+                                    })
+                                        .then(response => {
+                                            //debugger;
+                                            if (response.data.resultCode === 0) {
+                                                props.unfollow(u.id)
+                                            }
+                                        });
+
                                 }}>Unfollow</button>
                                 : <button onClick={() => {
-                                    props.follow(u.id)
+
+                                    axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {}, {
+                                        withCredentials: true,
+                                        headers: {
+                                            "API-KEY" : "11a6c194-cab8-4726-81c1-f9115370431e"
+                                        }
+                                    })
+                                        .then(response => {
+                                            //debugger;
+                                            if (response.data.resultCode === 0) {
+                                                props.follow(u.id)
+                                            }
+                                        });
+
                                 }}>Follow</button>}
                         </div>
                     </span>
