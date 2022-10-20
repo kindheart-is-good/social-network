@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Users.module.css';
 import userPhoto from "../../assets/images/userPhoto.png"
 import {NavLink} from "react-router-dom";
-import * as axios from "axios";
+import {usersAPI} from "../../api/api";
 
 let Users = (props) => {
 
@@ -52,12 +52,7 @@ let Users = (props) => {
                                         //debugger;
                                         props.toggleFollowingProgress(true, u.id);
 
-                                        axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {
-                                            withCredentials: true,
-                                            headers: {
-                                                "API-KEY" : "11a6c194-cab8-4726-81c1-f9115370431e"
-                                            }
-                                        })
+                                        usersAPI.follow(u.id)
                                             .then(response => {
                                                 //debugger;
                                                 if (response.data.resultCode === 0) {
@@ -72,12 +67,7 @@ let Users = (props) => {
                                         //debugger;
                                         props.toggleFollowingProgress(true, u.id);
 
-                                        axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {}, {
-                                            withCredentials: true,
-                                            headers: {
-                                                "API-KEY" : "11a6c194-cab8-4726-81c1-f9115370431e"
-                                            }
-                                        })
+                                        usersAPI.unfollow(u.id)
                                             .then(response => {
                                                 //debugger;
                                                 if (response.data.resultCode === 0) {

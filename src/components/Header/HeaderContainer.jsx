@@ -1,8 +1,8 @@
 import React from "react";
 import Header from "./Header";
-import * as axios from "axios";
 import {connect} from "react-redux";
 import {setAuthUserData} from "../../redux/auth-reducer";
+import {authAPI} from "../../api/api";
 
 class HeaderContainer extends React.Component {
     /* Даже если мы авторизованы на домене https://social-network.samuraijs.com то кука не цепляется автоматически
@@ -13,9 +13,7 @@ class HeaderContainer extends React.Component {
     и теперь если сервак поддерживает, а сервак поддерживает, то теперь у вас уйдет на сервак авторизованный запрос.
     */
     componentDidMount() {
-        axios.get(`https://social-network.samuraijs.com/api/1.0/auth/me`, {
-            withCredentials: true
-        })
+        authAPI.me()
             .then(response => {
                 //debugger;
                 if (response.data.resultCode === 0) {
