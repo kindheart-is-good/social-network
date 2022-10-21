@@ -1,8 +1,7 @@
 import React from "react";
 import Header from "./Header";
 import {connect} from "react-redux";
-import {setAuthUserData} from "../../redux/auth-reducer";
-import {authAPI} from "../../api/api";
+import {getAuthUserData} from "../../redux/auth-reducer";
 
 class HeaderContainer extends React.Component {
     /* Даже если мы авторизованы на домене https://social-network.samuraijs.com то кука не цепляется автоматически
@@ -13,18 +12,7 @@ class HeaderContainer extends React.Component {
     и теперь если сервак поддерживает, а сервак поддерживает, то теперь у вас уйдет на сервак авторизованный запрос.
     */
     componentDidMount() {
-        authAPI.me()
-            .then(response => {
-                //debugger;
-                if (response.data.resultCode === 0) {
-                    //this.props.setAuthUserData(response.data.data.login, );
-                    let {id, email, login} = response.data.data;
-                    this.props.setAuthUserData(id, email, login);
-                }
-                // response.data. - это стандартная структура axios-а для ответа с сервера
-                // так получилось что backend-разработчик на соц сети тоже упаковал данные в объект data
-                // поэтому и получилось: response.data.data.login
-            })
+        this.props.getAuthUserData();
     }
 
     render() {
@@ -37,4 +25,4 @@ const mapStateToProps = (state) => ({
     login: state.auth.login,
 });
 
-export default connect(mapStateToProps, {setAuthUserData})(HeaderContainer);
+export default connect(mapStateToProps, {getAuthUserData})(HeaderContainer);

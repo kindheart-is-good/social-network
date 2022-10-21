@@ -3,14 +3,12 @@ import {connect} from "react-redux";
 import {
     follow,
     unfollow,
-    setUsers,
     setCurrentPage,
-    setTotalUsersCount,
-    toggleIsFetching, toggleFollowingProgress
+    toggleFollowingProgress,
+    getUsers
 } from "../../redux/users-reducer";
 import Users from "./Users";
 import Preloader from "../common/Preloader/Preloader";
-import {usersAPI} from "../../api/api";
 
 /* В этом файле у нас сразу 2 контейнерных компоненты, вложенных друг в друга.
 * Задача UsersContainer выполнять GET-запросы.
@@ -19,43 +17,12 @@ import {usersAPI} from "../../api/api";
 class UsersContainer extends React.Component {
 
     componentDidMount() {
-        /*props.setUsers([
-                {id: 1, photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVGHL9r9OucwArH8yO3rEDPryG4V3tSCBw-w&usqp=CAU',
-                    followed: true, fullName: 'Anna', status: 'Hello',
-                    location: {city: 'Minsk', country: 'Belarus'} },
-                {id: 2, photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVGHL9r9OucwArH8yO3rEDPryG4V3tSCBw-w&usqp=CAU',
-                    followed: false, fullName: 'Dmitriy', status: 'Hi',
-                    location: {city: 'Moscow', country: 'Russia'} },
-                {id: 3, photoUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSVGHL9r9OucwArH8yO3rEDPryG4V3tSCBw-w&usqp=CAU',
-                    followed: false, fullName: 'Leonid', status: 'Wassup',
-                    location: {city: 'Kiev', country: 'Ukraine'} },]
-            )*/
-
-        this.props.toggleIsFetching(true);
-
-        usersAPI.getUsers(this.props.currentPage, this.props.pageSize).then(data => {
-                //debugger;
-                this.props.toggleIsFetching(false);
-                this.props.setUsers(data.items);
-                this.props.setTotalUsersCount(data.totalCount);
-                //debugger;
-            });
+        this.props.getUsers(this.props.currentPage, this.props.pageSize);
     }
 
     onPageChanged = (pageNumber) => {
         this.props.setCurrentPage(pageNumber);
-        /* верхней строчкой мы диспатчим в store новое значение.
-        Затем store вернёт нам значение через props, но сначала доработает данная функция (всё тело, ниже). */
-
-        this.props.toggleIsFetching(true);
-
-        usersAPI.getUsers(pageNumber, this.props.pageSize)
-            .then(data => {
-                //debugger;
-                this.props.toggleIsFetching(false);
-                this.props.setUsers(data.items);
-                //debugger;
-            });
+        this.props.getUsers(pageNumber, this.props.pageSize);
     }
 
     render() {
@@ -70,7 +37,6 @@ class UsersContainer extends React.Component {
                    users={this.props.users}
                    follow={this.props.follow}
                    unfollow={this.props.unfollow}
-                   toggleFollowingProgress={this.props.toggleFollowingProgress}
                    followingInProgress={this.props.followingInProgress}
             />
             </>
@@ -116,6 +82,10 @@ let mapStateToProps = (state) => {
 // то connect оборачивает ваши AC в функцию-обертку () => store.dispatch(AC) и передаёт в props компонента."
 
 export default connect(mapStateToProps,
-    {follow, unfollow, setUsers, setCurrentPage,
-                        setTotalUsersCount, toggleIsFetching, toggleFollowingProgress}
+    {follow, unfollow, setCurrentPage, toggleFollowingProgress,
+                    getUsers}
     )(UsersContainer);
+
+// Кстати по поводу thunk, внутрь connect()() попадает не getUsersThunkCreator а callback,
+// а connect()() просто вторым синтаксисом сокращенным просто позволяет нам не создавать callback внутри который вызывает ActionCreator
+// а он позволяет самому создать этот callback
