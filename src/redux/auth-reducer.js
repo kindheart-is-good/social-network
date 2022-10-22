@@ -8,6 +8,9 @@ let initialState = {
     login: null,
     isAuth: false,
 }
+// Благодаря данным isAuth из state мы в любой момент времени знаем что юзер сейчас залогинен или незалогинен.
+// и т.к. это просто данные из state то любая Компонента может получить эти данные.
+// Например, если юзер не залогинен то сделать Redirect.
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {

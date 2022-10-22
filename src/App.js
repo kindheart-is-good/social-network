@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar/Navbar";
 import DialogsContainer from "./components/Dialogs/DialogsContainer";
 import ProfileContainer from "./components/Profile/ProfileContainer";
 import UsersContainer from "./components/Users/UsersContainer";
+import LoginPage from "./components/Login/Login";   // можно любое имя т.к. экспорт по дефолту
 
 function App(props) {
     return (
@@ -27,6 +28,9 @@ function App(props) {
 
                     <Route path="/users"
                            element={<UsersContainer />} />
+
+                    <Route path="/login"
+                           element={<LoginPage />} />
 
                 </Routes>
             </div>
