@@ -48,24 +48,12 @@ class ProfileContainer extends React.Component {
     }
 }
 
-/* Создан HOC (для Редиректа) */
-let AuthRedirectComponent = withAuthRedirect(ProfileContainer);
-
 let mapStateToProps = (state) => ({
     profile: state.profilePage.profile,
 })
 
-export default connect(mapStateToProps, {getUserProfile})(withRouter(AuthRedirectComponent));
-
-// let WithUrlDataContainerComponent = withRouter(ProfileContainer);   // Чтобы получить данные из URL
-// export default connect(mapStateToProps, {setUserProfile})(WithUrlDataContainerComponent);
-
-/*
-const TakeParams = (props) => {
-    return <ProfileContainer {...props} param={useParams()} />
-}
-export default connect(mapStateToProps, {setUserProfile})(TakeParams);
-// export default compose(
-//     connect(mapStateToProps, {setUserProfile})
-// ) (TakeParams);
-*/
+export default compose(
+    connect(mapStateToProps, {getUserProfile}),
+    withRouter,
+    withAuthRedirect
+)(ProfileContainer)

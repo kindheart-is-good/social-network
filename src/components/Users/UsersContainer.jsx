@@ -10,6 +10,7 @@ import {
 import Users from "./Users";
 import Preloader from "../common/Preloader/Preloader";
 import {withAuthRedirect} from "../../hoc/withAuthRedirect";
+import {compose} from "redux";
 
 /* В этом файле у нас сразу 2 контейнерных компоненты, вложенных друг в друга.
 * Задача UsersContainer выполнять GET-запросы.
@@ -82,11 +83,9 @@ let mapStateToProps = (state) => {
 // " ...если вы передаете в connect вторым аргументом не mapDispatchToProps, а объект с AC,
 // то connect оборачивает ваши AC в функцию-обертку () => store.dispatch(AC) и передаёт в props компонента."
 
-export default withAuthRedirect(connect(mapStateToProps,
-    {follow, unfollow, setCurrentPage, toggleFollowingProgress,
-                    getUsers}
-    )(UsersContainer));
 
-// Кстати по поводу thunk, внутрь connect()() попадает не getUsersThunkCreator а callback,
-// а connect()() просто вторым синтаксисом сокращенным просто позволяет нам не создавать callback внутри который вызывает ActionCreator
-// а он позволяет самому создать этот callback
+
+export default compose(
+    withAuthRedirect,
+    connect(mapStateToProps, {follow, unfollow, setCurrentPage, toggleFollowingProgress, getUsers})
+)(UsersContainer)
